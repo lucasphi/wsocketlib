@@ -1,0 +1,12 @@
+.websocket-modal-window {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+	width: 250px;
+	border: 1px solid #666;
+	padding: 8px;
+	background: #efefef;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
