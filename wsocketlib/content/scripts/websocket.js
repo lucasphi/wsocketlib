@@ -138,7 +138,7 @@
 		};
 		
 		/*
-		* Registra as estrategias para recebimento dos pacotes.
+		* Registra a estrategia para recebimento dos pacotes.
 		* @param {strategy} Objeto contendo a estratégia.
 		*/
 		this.addStrategy = function(strategy) {
@@ -150,7 +150,18 @@
 		};
 
 		/*
-		* Adatper para converter os pacotes para formatos diferentes
+		* Remove uma estratégia.
+		* @param {opcode} Identificador da estratégia a ser removida.
+		*/
+		this.removeStrategy = function(opcode) {
+
+			if (opcode != undefined && opcode != null)
+				delete strategies[opcode];
+
+		};
+
+		/*
+		* Define o adaptador para converter os pacotes para formatos diferentes
 		* @param {type} Tipo do adaptador. Pode ser 'read' para a leitura de mensagens ou 'write' para escrita.
 		* @param {adapter} Função que será chamada para converter a mensagem
 		*/
@@ -164,6 +175,19 @@
 			if (adapter instanceof Function) {
 				adapters[type] = adapter;
 			}
+
+		};
+
+		/*
+		* Remove o adaptador para um determinado tipo
+		* @param {type} Tipo do adaptador. Pode ser 'read' para a leitura de mensagens ou 'write' para escrita.
+		*/
+		this.removeAdapter = function(type) {
+
+			/* Interrompe caso o tipo do adaptador seja inválido */
+			if (type != 'read' && type != 'write') return;
+
+			delete adapters[type];
 
 		};
 		
@@ -184,9 +208,17 @@
 		};
 
 		var onPackageReceive = function(evt) {
-			var data;
+			var data, strategy;
 			data = parseIncomingPackage(evt.data);
-			strategies[data.opcode].onMessage(data);
+
+			strategy = strategies[data.opcode]; 
+
+			if (strategy != undefined && strategy != null) {
+				strategy.onMessage(data);
+			}
+			else {
+				throw Resources.missingStrategy + data.opcode;
+			}
 		};
 
 		var onOpen = function(evt) {
@@ -256,10 +288,18 @@
 			if ('read' in adapters) {
 				receivedMessage = adapters['read'](data);
 			} else {
-
-				//TODO: implementar leitura de pacotes binários.
+				
 				try {
-					receivedMessage = JSON.parse(receivedMessage);
+
+					if (params.dataType == 'binary') {
+						//Formata um pacote binário
+						//TODO: implementar leitura de pacotes binários.
+					}
+					else {
+						//Formata um pacote recebido como string
+						receivedMessage = JSON.parse(receivedMessage);
+					}
+
 				} catch (ex) {
 					console.log(Resources.parsePackageException);
 				}
@@ -268,9 +308,6 @@
 			//Verifica se a mensagem possui um opcode.
 			if (receivedMessage.opcode == undefined || receivedMessage.opcode == null) {
 				throw Resources.invalidPackageReceived;
-			}			
-			if (strategies[receivedMessage.opcode] == undefined) {
-				throw Resources.missingStrategy + receivedMessage.opcode;
 			}
 			
 			return receivedMessage;
@@ -289,12 +326,13 @@
 				pkgParsed = adapters['write'](pkg);
 			} else {
 
-				if (params.dataType == 'string') {
-					//Formata o pacote para ser enviado como string
-					pkgParsed = JSON.stringify(pkg);
-				} else if (params.dataType == 'binary') {
+				if (params.dataType == 'binary') {
 					//Formata o pacote para ser enviado como buffer binário
 					//TODO: formatar o pacote para envio binário. Converter (serializar) de object para arraybuffer
+				}
+				else {
+					//Formata o pacote para ser enviado como string
+					pkgParsed = JSON.stringify(pkg);
 				}
 
 			}
