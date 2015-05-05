@@ -14,25 +14,10 @@
 	<div>Aluno: Lucas Phillip</div>
 	<br />
 	<div id="loginbox">
-		<p>Usuário: <input type="text" id="username" /></p>
-		<p> Senha: <input type="password" id="pwd" /></p>
-		<button type="button" data-ws="wssocket" data-wsurl="ws://echo.websocket.org/">Conectar</button>
-		<!--<button type="button" data-ws="wssocket" data-wsurl="ws://192.168.0.13:8081/">Conectar</button>-->
-		<!--<button type="button" data-ws="mainsocket" data-wsurl="ws://localhost:8081/">Conectar</button>-->
-		<button type="button" id="loginbtn" disabled="disabled">Login</button>
+		<p>Mensagem: <input type="text" id="msg" /></p>
+		<button id="msgbtn" type="button">Enviar</button>
 	</div>
-	
-	<div id="pcinfobox" style="display:none">
-	
-		<div style="border:1px solid #666; width:800px; max-height:600px; overflow:auto; float:left">
-			Número de processos rodando no servidor: <span id="processcount"></span>
-			<br /><br />
-			Lista de processos:
-			<div id="processlist">
-			</div>
-		</div>
-		
-	</div>
+
 </body>
 
 <script type="text/javascript" src="content/scripts/jquery-2.1.1.min.js"/></script>

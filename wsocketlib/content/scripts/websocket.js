@@ -41,6 +41,9 @@
 		*/
 		adapters = [];
 
+		/* Inicializa os parametros com um objeto vazio */
+		params = {};
+
 		//Propriedades públicas
 
 		/* Identificador ou nome do objeto websocket */
@@ -81,8 +84,7 @@
 		* Cria uma nova conexão.
 		* @param {uri} Endereço do recurso.
 		*/
-		this.connect = function(uri) {
-			//TODO: adicionar suporte para pacotes binários
+		this.connect = function(uri) {			
 			if (connection != null) {
 				throw Resources.connectionExists;
 			}
